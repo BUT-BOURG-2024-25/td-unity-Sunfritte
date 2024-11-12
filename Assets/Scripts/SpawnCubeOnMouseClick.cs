@@ -3,32 +3,31 @@ using UnityEngine.InputSystem;
 
 public class SpawnCube : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject objectToSpawn = null;
 
     [SerializeField] private LayerMask GroundLayer;
     
     private void Start()
     {
-        InputManager.Instance.RegisterOnClickInput(OnCLick,true);
+        InputManager.Instance.RegisterOnClickInput(OnClick, true);
     }
     
     private void OnDestroy()
     {
-        InputManager.Instance.RegisterOnClickInput(OnCLick,false);
+        InputManager.Instance.RegisterOnClickInput(OnClick, false);
     }
 
-    private void OnCLick(InputAction.CallbackContext ctx)
+    private void OnClick(InputAction.CallbackContext ctx)
     {
         Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
-        bool raycastHasHit = Physics.Raycast(cameraRay,out hitInfo,10000,GroundLayer);
+        bool raycastHasHit = Physics.Raycast(cameraRay, out hitInfo, 10000, GroundLayer);
 
-        if (raycastHasHit && objectToSpawn != null)
+        if (raycastHasHit)
         {
-            GameObject.Instantiate(objectToSpawn,hitInfo.point+(Vector3.up*0.5f),Quaternion.identity);
+            if (hitInfo.collider.CompareTag("Cube"))
+            {
+                Destroy(hitInfo.collider.gameObject);
+            }
         }
     }
-    
-   
 }
